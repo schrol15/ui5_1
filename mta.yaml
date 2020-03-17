@@ -1,0 +1,55 @@
+ID: mta_ui5AppSchrol2
+_schema-version: '2.1'
+parameters:
+  deploy_mode: html5-repo
+version: 0.0.1
+modules:
+  - name: mta-ui5appschrol2-approuter
+    type: approuter.nodejs
+    path: mta-ui5appschrol2-approuter
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: mta_ui5AppSchrol2_html5_repo_runtime
+      - name: uaa_mta_ui5AppSchrol2
+  - name: mta_ui5AppSchrol2_ui_deployer
+    type: com.sap.html5.application-content
+    path: mta_ui5AppSchrol2_ui_deployer
+    requires:
+      - name: mta_ui5AppSchrol2_html5_repo_host
+    build-parameters:
+      requires:
+        - name: ui5AppSchrol2
+          artifacts:
+            - './*'
+          target-path: resources/ui5AppSchrol2
+  - name: ui5AppSchrol2
+    type: html5
+    path: ui5AppSchrol2
+    build-parameters:
+      builder: grunt
+      supported-platforms: []
+      build-result: dist
+resources:
+  - name: mta_ui5AppSchrol2_html5_repo_runtime
+    parameters:
+      service-plan: app-runtime
+      service: html5-apps-repo
+    type: org.cloudfoundry.managed-service
+  - name: mta_ui5AppSchrol2_html5_repo_host
+    parameters:
+      service-plan: app-host
+      service: html5-apps-repo
+    type: org.cloudfoundry.managed-service
+  - name: uaa_mta_ui5AppSchrol2
+    parameters:
+      path: ./xs-security.json
+      service-plan: application
+      service: xsuaa
+    type: org.cloudfoundry.managed-service
+  - name: dest_mta_ui5AppSchrol2
+    parameters:
+      service-plan: lite
+      service: destination
+    type: org.cloudfoundry.managed-service
